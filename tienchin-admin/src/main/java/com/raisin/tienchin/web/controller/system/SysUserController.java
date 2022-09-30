@@ -1,22 +1,5 @@
 package com.raisin.tienchin.web.controller.system;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import com.raisin.tienchin.common.annotation.Log;
 import com.raisin.tienchin.common.constant.UserConstants;
 import com.raisin.tienchin.common.core.controller.BaseController;
@@ -33,6 +16,16 @@ import com.raisin.tienchin.system.service.ISysDeptService;
 import com.raisin.tienchin.system.service.ISysPostService;
 import com.raisin.tienchin.system.service.ISysRoleService;
 import com.raisin.tienchin.system.service.ISysUserService;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户信息
@@ -57,7 +50,7 @@ public class SysUserController extends BaseController {
     /**
      * 获取用户列表
      */
-    @PreAuthorize("@ss.hasPermi('system:user:list')")
+    @PreAuthorize("hasPermission('system:user:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysUser user) {
         startPage();
@@ -66,7 +59,7 @@ public class SysUserController extends BaseController {
     }
 
     @Log(title = "用户管理", businessType = BusinessType.EXPORT)
-    @PreAuthorize("@ss.hasPermi('system:user:export')")
+    @PreAuthorize("hasPermission('system:user:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysUser user) {
         List<SysUser> list = userService.selectUserList(user);
@@ -75,7 +68,7 @@ public class SysUserController extends BaseController {
     }
 
     @Log(title = "用户管理", businessType = BusinessType.IMPORT)
-    @PreAuthorize("@ss.hasPermi('system:user:import')")
+    @PreAuthorize("hasPermission('system:user:import')")
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
         ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
@@ -94,7 +87,7 @@ public class SysUserController extends BaseController {
     /**
      * 根据用户编号获取详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:user:query')")
+    @PreAuthorize("hasPermission('system:user:query')")
     @GetMapping(value = {"/", "/{userId}"})
     public AjaxResult getInfo(@PathVariable(value = "userId", required = false) Long userId) {
         userService.checkUserDataScope(userId);
@@ -114,7 +107,7 @@ public class SysUserController extends BaseController {
     /**
      * 新增用户
      */
-    @PreAuthorize("@ss.hasPermi('system:user:add')")
+    @PreAuthorize("hasPermission('system:user:add')")
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysUser user) {
@@ -135,7 +128,7 @@ public class SysUserController extends BaseController {
     /**
      * 修改用户
      */
-    @PreAuthorize("@ss.hasPermi('system:user:edit')")
+    @PreAuthorize("hasPermission('system:user:edit')")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SysUser user) {
@@ -157,7 +150,7 @@ public class SysUserController extends BaseController {
     /**
      * 删除用户
      */
-    @PreAuthorize("@ss.hasPermi('system:user:remove')")
+    @PreAuthorize("hasPermission('system:user:remove')")
     @Log(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{userIds}")
     public AjaxResult remove(@PathVariable Long[] userIds) {
@@ -170,7 +163,7 @@ public class SysUserController extends BaseController {
     /**
      * 重置密码
      */
-    @PreAuthorize("@ss.hasPermi('system:user:resetPwd')")
+    @PreAuthorize("hasPermission('system:user:resetPwd')")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/resetPwd")
     public AjaxResult resetPwd(@RequestBody SysUser user) {
@@ -184,7 +177,7 @@ public class SysUserController extends BaseController {
     /**
      * 状态修改
      */
-    @PreAuthorize("@ss.hasPermi('system:user:edit')")
+    @PreAuthorize("hasPermission('system:user:edit')")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public AjaxResult changeStatus(@RequestBody SysUser user) {
@@ -197,7 +190,7 @@ public class SysUserController extends BaseController {
     /**
      * 根据用户编号获取授权角色
      */
-    @PreAuthorize("@ss.hasPermi('system:user:query')")
+    @PreAuthorize("hasPermission('system:user:query')")
     @GetMapping("/authRole/{userId}")
     public AjaxResult authRole(@PathVariable("userId") Long userId) {
         AjaxResult ajax = AjaxResult.success();
@@ -211,7 +204,7 @@ public class SysUserController extends BaseController {
     /**
      * 用户授权角色
      */
-    @PreAuthorize("@ss.hasPermi('system:user:edit')")
+    @PreAuthorize("hasPermission('system:user:edit')")
     @Log(title = "用户管理", businessType = BusinessType.GRANT)
     @PutMapping("/authRole")
     public AjaxResult insertAuthRole(Long userId, Long[] roleIds) {
@@ -223,7 +216,7 @@ public class SysUserController extends BaseController {
     /**
      * 获取部门树列表
      */
-    @PreAuthorize("@ss.hasPermi('system:user:list')")
+    @PreAuthorize("hasPermission('system:user:list')")
     @GetMapping("/deptTree")
     public AjaxResult deptTree(SysDept dept) {
         return AjaxResult.success(deptService.selectDeptTreeList(dept));

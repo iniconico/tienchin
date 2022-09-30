@@ -14,7 +14,7 @@ import com.raisin.tienchin.common.core.controller.BaseController;
 @Controller
 @RequestMapping("/tool/swagger")
 public class SwaggerController extends BaseController {
-    @PreAuthorize("@ss.hasPermi('tool:swagger:view')")
+    @PreAuthorize("hasPermission('tool:swagger:view')")
     @GetMapping()
     public String index() {
         return redirect("/swagger-ui.html");

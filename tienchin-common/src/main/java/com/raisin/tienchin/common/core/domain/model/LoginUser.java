@@ -1,12 +1,15 @@
 package com.raisin.tienchin.common.core.domain.model;
 
-import java.util.Collection;
-import java.util.Set;
-
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.raisin.tienchin.common.core.domain.entity.SysUser;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.alibaba.fastjson2.annotation.JSONField;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 登录用户身份权限
@@ -229,6 +232,11 @@ public class LoginUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if (null != permissions && permissions.size() > 0) {
+            return permissions.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 }
